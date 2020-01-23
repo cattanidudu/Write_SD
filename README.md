@@ -36,8 +36,8 @@ Write_SD.c
   ---- | ------ | -------
   58   | #15    | MOSI
   59   | #14    | MISO
-  60   | #7     | CLK
-  61   | #19    | SD
+  60   | #7     | SCK
+  61   | #19    | CS
 
 ## Métodos de cada sistema
 
@@ -96,13 +96,26 @@ No arquivo "write_Sd.c" encontram-se algumas definições a serem realizadas;
 - #define f_control **x**-- Utilizado para definir a frequência de controle (em KHz)
 - #define cluster_size n_variables* **x** -- Deve-se definir x de tal forma que o tamanho do cluster seja múltiplo de 125
 - #define buffer_size_sd cluster_size* **x** -- Deve-se definir o menor x possível sem que comprometa a escrita dos dados
-Quanto menor o buffer, menos memória utilizada, porém mais chance de ocorrer erro. Para aumentar o desempenho, aumentar o buffer.
+Quanto menor o buffer, menos memória utilizada, porém mais chance de ocorrer erro. Para aumentar o desempenho, aumentar o buffer. Ver no setor de desempenho abaixo.
 
+### Possíveis configurações
+  
+  Variaveis | f_writing (KHz)  | f_control (KHz) |x - buffer_size_sd  | x - cluster_size | Tempo para escrita/ciclo |
+  :----:    | :------:         | :-------:       | :-----:            | :-----:          | :----:                   |
+  2         | 10               | 10              |  50                | 62               | 60uS                     |
+  5         | 5                | 10              |  15                | 100              | 60uS                     | 
 
 ## Observações
 
 - Esse algoritmo esta configurado para utilização com a SPI-A, porém no arquivo *mmc_F2837x.c* tais configurações podem ser modificadas.
-
+- Sempre o nome do arquivo é "data.txt". Caso já tenha algum outro arquivo do mesmo nome no diretório, o algortimo sobreescreve.
+- Pode-se ter certeza que o sistema esta funcionando devidamente se for FR_OK o valor das variáveis:
+```
+fresult_mount
+fresult_open
+fresult_write
+fresult_save
+```
 # Desenvolvido por
 
  - Autor: Eduardo Cattani
