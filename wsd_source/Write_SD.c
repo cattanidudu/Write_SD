@@ -19,12 +19,12 @@
 
 // --------------------------------- DEFINICOES --------------------------------- //
 
-#define f_writing 10                        // em KHz - frequencia de escrita
+#define f_writing 5                        // em KHz - frequencia de escrita
 #define f_control 10                        // em KHz - frequencia de controle
-#define n_variables 2                       // numero de variaveis
+#define n_variables 4                       // numero de variaveis
 
-#define cluster_size n_variables*50         // ser multiplo de 125
-#define buffer_size_sd cluster_size*10      // tamanho total do buffer
+#define cluster_size n_variables*31         // ser multiplo de 125 ou próximo
+#define buffer_size_sd cluster_size*70      // tamanho total do buffer
                                             // aumentar a fator que multiplica
                                             // para aumentar o tempo livre da CPU
 
@@ -71,16 +71,8 @@ void init_link()
     ClkCfgRegs.LOSPCP.bit.LSPCLKDIV = 2;
     EDIS;
     fresult_mount = f_mount(0, &g_sFatFs);
-    int path_counter = 0;
-    char path[20];
-    do{
-
-        sprintf(path, "data%d.txt", path_counter);
-        path_counter++;
-        fresult_open = f_open(&g_sFileObject, path, FA_WRITE | FA_CREATE_NEW);
-    } while(fresult_open == FR_EXIST );
-
-    //FA_CREATE_ALWAYS
+    fresult_open = f_open(&g_sFileObject,"data.txt", FA_WRITE | FA_CREATE_ALWAYS);
+    //
 
 }
 
@@ -155,20 +147,23 @@ void test()
     static float data[n_variables];
     static float *p_data = data;
     static float counter_test=0;
-    static int counter_data;
+    static int counter_data=0;
+    static short positive= 1;
 
-    int step = 0.5;
+
+    if (counter_test == 30000)   positive = 0;
+    if (counter_test == 0)     positive = 1;
+
+    if (positive)          counter_test++;
+    else                   counter_test--;
 
     for(counter_data=0;counter_data<n_variables;counter_data++)
     {
-    *p_data = counter_test + counter_data;
-    p_data ++;
+    *p_data = counter_test*(counter_data+1);
+    p_data++;
     }
 
     p_data = data;
-    counter_test+=step;
-    if (counter_test == 15000) step *= -1;
-    if (counter_test == 0) step *= -1;
 
     write(data);
 

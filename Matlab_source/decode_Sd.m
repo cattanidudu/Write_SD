@@ -5,6 +5,7 @@ function result = decode_Sd(path,names)
     fileID = fopen(path,'r');
     read = fscanf(fileID,"%c");
     read = dec2hex(unicode2native(read, 'CP1252'));
+    fclose("all");
     hexa = reshape(read.',8,[]).';
     for i = 1:size(hexa,1) 
         bytes = [hex2dec(hexa(i,1:2)),hex2dec(hexa(i,3:4)),hex2dec(hexa(i,5:6)),hex2dec(hexa(i,7:8))];   
@@ -20,7 +21,7 @@ function result = decode_Sd(path,names)
             counter = counter+1;
         end
     end
-    fclose("all");
+    
 end
 
 

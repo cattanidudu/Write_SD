@@ -24,7 +24,7 @@ function test_Sd(path,n_variables)
     fprintf('Erros de escrita = %.3f k\n', counter_error/1000);
     fprintf('Acertos de escrita = %.3f k\n', counter_ok/1000);
     fprintf('Confiabilidade = %.2f %%\n', counter_ok/total_writes*100);
-    
+    figure(n_variables)
     plot(all_data.A/15000)
-    title("Dados gravados")
+    title("Dados gravados - "+n_variables)
 end
